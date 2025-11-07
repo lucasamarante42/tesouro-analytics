@@ -1,0 +1,8 @@
+global:
+  scrape_interval: 10s  # coleta a cada 10 segundos
+
+scrape_configs:
+  - job_name: 'tesouro-analytics'
+    metrics_path: /metrics
+    static_configs:
+      - targets: ['app:5000']  # nome do container e porta do seu Flask
