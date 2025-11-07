@@ -244,13 +244,95 @@ O **MongoDB** é o **banco de dados principal** do projeto, utilizado para armaz
 
 Host: localhost
 Porta: 27017
-Database: tesouro_db
+Database: tesourodb
 
+```
+
+### 🔹 Acessar o container do MongoDB
+
+Execute o comando abaixo para abrir o terminal dentro do container:
+
+```bash
 docker exec -it mongo mongosh
-use tesouro_db
-show collections
-db.nome_da_colecao.countDocuments()
+```
 
+---
+
+### 🔹 Listar os bancos de dados disponíveis
+
+```js
+show dbs
+```
+
+Saída esperada:
+
+```
+admin       40.00 KiB
+config     108.00 KiB
+local       80.00 KiB
+tesourodb  648.00 KiB
+```
+
+---
+
+### 🔹 Selecionar o banco principal da aplicação
+
+```js
+use tesourodb
+```
+
+---
+
+### 🔹 Listar as coleções (tabelas)
+
+```js
+show collections
+```
+
+Saída esperada:
+
+```
+reports
+```
+
+---
+
+### 🔹 Consultar os relatórios salvos
+
+Listar todos os documentos formatados:
+
+```js
+db.reports.find().pretty()
+```
+
+Exibir apenas um documento:
+
+```js
+db.reports.findOne()
+```
+
+---
+
+### 🔹 Ver os últimos relatórios (ordenados por data)
+
+```js
+db.reports.find().sort({ created_at: -1 }).limit(5).pretty()
+```
+
+---
+
+### 🔹 Exibir apenas alguns campos específicos
+
+```js
+db.reports.find({}, { total_geral: 1, est_next_7: 1, created_at: 1 }).sort({ created_at: -1 }).limit(5).pretty()
+```
+
+---
+
+### 🔹 Contar o total de documentos
+
+```js
+db.reports.countDocuments()
 ```
 
 > 💡 Quando o ambiente é iniciado com Docker Compose, o MongoDB é levantado automaticamente junto com os demais serviços.
