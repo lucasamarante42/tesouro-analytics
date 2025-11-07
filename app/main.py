@@ -44,12 +44,18 @@ def history():
 
 @app.route("/metrics")
 def metrics_endpoint():
-	# carregar métricas do dict
-	if metrics.get("last_total") is not None:
-		g_last_total.set(float(metrics.get("last_total") or 0))
-	if metrics.get("last_est_next_7") is not None:
-		g_last_est.set(float(metrics.get("last_est_next_7") or 0))
-	registry = None  # use default registry
+	db = get_mongo()
+	# Pega o último relatório salvo
+	report = db.reports.find_one(sort=[("created_at", -1)])
+
+	if report:
+		# garante que os valores são float
+		last_total = float(report.get("total_geral", 0))
+		est_next_7 = float(report.get("est_next_7", 0))
+
+		g_last_total.set(last_total)
+		g_last_est.set(est_next_7)
+
 	return Response(generate_latest(), mimetype=CONTENT_TYPE_LATEST)
 
 @app.route("/trigger", methods=["POST"])
