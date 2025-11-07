@@ -240,6 +240,8 @@ O **MongoDB** é o **banco de dados principal** do projeto, utilizado para armaz
 
 #### 🔗 Acesso Local
 
+```
+
 Host: localhost
 Porta: 27017
 Database: tesouro_db
@@ -249,6 +251,7 @@ use tesouro_db
 show collections
 db.nome_da_colecao.countDocuments()
 
+```
 
 > 💡 Quando o ambiente é iniciado com Docker Compose, o MongoDB é levantado automaticamente junto com os demais serviços.
 
