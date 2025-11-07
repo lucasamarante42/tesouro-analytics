@@ -281,4 +281,87 @@ db.nome_da_colecao.countDocuments()
 
 ---
 
+````markdown
+## Endpoints da API
+
+A aplicação possui os seguintes endpoints REST para interação e monitoramento:
+
+### 1. **Trigger de Processamento**
+- **Endpoint:** `/trigger`
+- **Método:** `GET`
+- **Descrição:** Envia a tarefa para processar o CSV do Tesouro Direto (ou arquivo local) de forma assíncrona pelo Celery.
+- **Exemplo de retorno:**
+```json
+{
+    "csv_url": "https://www.tesourotransparente.gov.br/ckan/dataset/f0468ecc-ae97-4287-89c2-6d8139fb4343/resource/e5f90e3a-8f8d-4895-9c56-4bb2f7877920/download/vendastesourodireto.csv",
+    "message": "Task enviada para processamento",
+    "task_id": "c86a36a6-265c-405a-aa19-5514214d2a22"
+}
+````
+
+---
+
+### 2. **Métricas**
+
+* **Endpoint:** `/metrics`
+* **Método:** `GET`
+* **Descrição:** Retorna métricas para Prometheus, incluindo memória, CPU e indicadores da última execução de vendas e estimativa dos próximos 7 dias.
+* **Exemplo de retorno (Prometheus format):**
+
+```
+# HELP tesouro_last_total Último total processado
+# TYPE tesouro_last_total gauge
+tesouro_last_total 1234567.89
+# HELP tesouro_last_est_next_7 Estimativa vendas próximos 7 dias
+# TYPE tesouro_last_est_next_7 gauge
+tesouro_last_est_next_7 98765.43
+```
+
+---
+
+### 3. **Histórico**
+
+* **Endpoint:** `/history`
+* **Método:** `GET`
+* **Descrição:** Retorna o histórico de vendas processadas, armazenadas no MongoDB.
+* **Exemplo de retorno:**
+
+```json
+[
+    {
+        "_id": "690d563f252488a03700a9bf",
+        "created_at": "2025-11-07T02:15:27.736000Z",
+        "daily_points": [
+            {"date": "2025-10-04", "total": 1496609.95},
+            {"date": "2025-10-04", "total": 1050500.98}
+        ],
+        "total_geral": 2547109.93,
+        "est_next_7": 123456.78
+    }
+]
+```
+
+---
+
+### 4. **Relatório**
+
+* **Endpoint:** `/report`
+* **Método:** `GET`
+* **Descrição:** Gera um relatório resumido com totais e estimativas, baseado no processamento mais recente.
+* **Exemplo de retorno:**
+
+```json
+{
+    "total_vendas": 2547109.93,
+    "top3_titulos": {
+        "Tesouro RendA+": 1496609.95,
+        "Tesouro Educa+": 1050500.98,
+        "Tesouro Educa+ (2031)": 107268.40
+    },
+    "estimativa_proximos_7_dias": 123456.78
+}
+```
+
+> **Observação:** Para testar os endpoints localmente, utilize `http://localhost:5000/<endpoint>` no navegador ou no Postman. Para envio de processamento assíncrono, o Celery precisa estar rodando.
+
 

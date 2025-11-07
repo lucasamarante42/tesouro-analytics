@@ -25,6 +25,7 @@ def estimate_next_week(total_by_day: pd.Series):
 
 def analyze_dataframe(df: pd.DataFrame):
 	df = df.copy()
+
 	df.rename(columns={
 		"Tipo Titulo": "tipo",
 		"Vencimento do Titulo": "vencimento",
@@ -33,8 +34,17 @@ def analyze_dataframe(df: pd.DataFrame):
 		"Quantidade": "quantidade",
 		"Valor": "valor"
 	}, inplace=True)
-	df['data_venda'] = pd.to_datetime(df['data_venda'], dayfirst=True, errors='coerce')
+
+	# vírgula para ponto
+	df['valor'] = df['valor'].str.replace(',', '.', regex=False)
+	df['quantidade'] = df['quantidade'].str.replace(',', '.', regex=False)
+
+	# conversão de tipos
 	df['valor'] = pd.to_numeric(df['valor'], errors='coerce')
+	df['quantidade'] = pd.to_numeric(df['quantidade'], errors='coerce')
+	df['data_venda'] = pd.to_datetime(df['data_venda'], dayfirst=True, errors='coerce')
+
+	# remover linhas com valores inválidos
 	df.dropna(subset=['data_venda', 'valor'], inplace=True)
 
 	total_por_titulo = df.groupby('tipo')['valor'].sum().sort_values(ascending=False)
